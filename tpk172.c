@@ -1,7 +1,14 @@
 #include "tpk172.h"
 
-void formBuf(char *a, int TRK_NO, int Command, int Price, int Volume,int Status, int Error, int Code)
+long int formBuf(char *a, long int TRK_NO, long int Command, long int Price, long int Volume, long int Error, long int Code)
 {
+    //Checking incoming data
+    if (TRK_NO > 0x7F || TRK_NO < 0) return 1;
+    if (Command > 0xF || Command < 0) return 2;
+    if (Price > 999999 || Price < 0) return 3;
+    if (Volume > 999999 || Volume < 0) return 4;
+    if (Error > 0xFF || Error < 0) return 5;
+    if (Code > 0xFF || Error < 0) return 6;
     //SOH
     a[0] = 0x1;
     //TRK_NO
@@ -16,56 +23,48 @@ void formBuf(char *a, int TRK_NO, int Command, int Price, int Volume,int Status,
     //STX
     a[4] = 0x2;
     //Price
-    int devider = 100000;
-    for (int i = 0; i < 6; i++)
+    long int devider = 100000;
+    for (long int i = 0; i < 6; i++)
     {
-        int x = i + 5;
+        long int x = i + 5;
         a[x] = Price/devider + 48;
         Price = Price - devider * (a[x] - 48);
         devider /= 10;
     }
     //Volume
     devider = 100000;
-    for (int i = 0; i < 6; i++)
+    for (long int i = 0; i < 6; i++)
     {
-        int x = i + 11;
+        long int x = i + 11;
         a[x] = Volume/devider + 48;
         Volume = Volume - devider * (a[x] - 48);
         devider /= 10;
     }
-    //Status
-    devider = 1000;
-    for (int i = 0; i < 4; i++)
-    {
-        int x = i + 17;
-        a[x] = Status/devider;
-        Status -= devider*a[x];
-        if (a[x] > 9) a[x] += 55;
-        else a[x] += 48;
-        devider /= 10;
-    }
     //Error
-    a[21] = Error/16;
-    Error -= a[21] * 16;
-    if (a[21] > 9) a[21] += 55;
-    else a[21] += 48;
-    a[22] = Error;
-    if (a[22] > 9) a[22] += 55;
-    else a[22] += 48;
+    a[17] = Error/16;
+    Error -= a[17] * 16;
+    if (a[17] > 9) a[17] += 55;
+    else a[17] += 48;
+    a[18] = Error;
+    if (a[18] > 9) a[18] += 55;
+    else a[18] += 48;
     //Code
-    a[23] = Code/16;
-    Code -= a[23] * 16;
-    if (a[23] > 9) a[23] += 55;
-    else a[23] += 48;
-    a[24] = Code;
-    if (a[24] > 9) a[24] += 55;
-    else a[24] += 48;
+    a[19] = Code/16;
+    Code -= a[19] * 16;
+    if (a[19] > 9) a[19] += 55;
+    else a[19] += 48;
+    a[20] = Code;
+    if (a[20] > 9) a[20] += 55;
+    else a[20] += 48;
     //ETX
-    a[25] = 0x3;
+    a[21] = 0x3;
     //CRC
-    a[26] = a[1];
-    for (int i = 2; i < 27; i++)
+    a[22] = a[1];
+    long int i = 2;
+    while(i < 22)
     {
-        a[26] ^= a[i];
+        a[22] ^= a[i];
+        i++;
     }
+    return 0;
 }
