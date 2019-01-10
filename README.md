@@ -1,6 +1,2 @@
 # TPK192
-Cross-Platform C Application
-
-Цель задания – составить буфер для отправки по rs232 по протоколу Искра (файл в репозитории).
-Требуется написать универсальную платформонезависимую функцию отправки данных от ККМ в контроллер ТРК на языке С, без использования stdio.h/string.h или каких-либо других.
-Обращаю внимание, что на значения номер колонки, код команды и т.д. функция должна получать в числовом виде.
+The purpose of the task is to create a buffer for sending via RS232 using the "Iskra" protocol (file in the repository). It is required to write a universal platform-independent function of sending data from the CMC to the dispenser controller in C, without using stdio.h / string.h or any other. Values of the column number, command code, etc. the function should receive in numeric form.
